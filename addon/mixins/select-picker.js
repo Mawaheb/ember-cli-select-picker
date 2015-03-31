@@ -72,9 +72,10 @@ var SelectPickerMixin = Ember.Mixin.create({
     // property.
     var selection     = this.selectionAsArray();
     var searchMatcher = this.makeSearchMatcher();
+    var activeIndex   = this.get('activeIndex');
 
     var result = this.get('content')
-      .map(function(item) {
+      .map(function(item, index) {
         var label = Ember.get(item, labelPath);
         var value = Ember.get(item, valuePath);
         var group = groupPath ? Ember.get(item, groupPath) : null;
@@ -84,6 +85,7 @@ var SelectPickerMixin = Ember.Mixin.create({
             group:    group,
             label:    label,
             value:    value,
+            active:   activeIndex != null && activeIndex === index,
             selected: selection.contains(item)
           };
         } else {
@@ -98,7 +100,8 @@ var SelectPickerMixin = Ember.Mixin.create({
 
     return result;
   }.property('selection.@each', 'content.@each', 'optionGroupPath',
-             'optionLabelPath', 'optionValuePath', 'searchFilter'),
+             'optionLabelPath', 'optionValuePath', 'searchFilter',
+             'activeIndex'),
 
   contentPathName: function(pathName) {
     return this.getWithDefault(pathName, '').substr(8);
